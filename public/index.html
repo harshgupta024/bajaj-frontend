@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BFHL Challenge</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      font-size: 16px;
+      box-sizing: border-box;
+      margin-bottom: 20px;
+      resize: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      color: #fff;
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .error-message {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>BFHL Challenge</h1>
+    <textarea id="jsonInput" placeholder='{
+            "data": ["A", "2", "3", "b", "z"]
+        }'></textarea>
+    <button onclick="submitData()">Submit</button>
+    <div id="error" class="error-message"></div>
+  </div>
+
+  <script>
+    function submitData() {
+      const input = document.getElementById('jsonInput').value;
+      const errorDiv = document.getElementById('error');
+
+      try {
+        JSON.parse(input);
+        errorDiv.textContent = '';
+
+        fetch('http://localhost:5000/bfhl', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: input
+        })
+          .then(response => response.json())
+          .then(data => console.log(data))
+          .catch(error => {
+            console.error('Error:', error);
+            errorDiv.textContent = 'Network error or invalid response from server';
+          });
+
+      } catch (e) {
+        errorDiv.textContent = 'Invalid JSON or network error';
+      }
+    }
+  </script>
+</body>
+
+</html>
